@@ -8,17 +8,31 @@
 
 | 组件 | 已验证版本 |
 | --- | --- |
-| DSH Web 界面 | `0.2.2-rc.5` |
+| DeepSeek Harness | `0.2.2-rc.5` |
 | Better Sidebar（需启用） | `0.32.1` |
 
-1. 从源码安装：
+### 桌面端：从界面安装（推荐）
 
-   ```powershell
-   dsh plugin --profile web add github:Ling-ye-Future/dsh-better-plan
-   ```
+1. 从 [GitHub Releases](https://github.com/Ling-ye-Future/dsh-better-plan/releases) 下载 `dsh-better-plan-*.tgz` 安装包。按发布说明核对 SHA-256 后解压。
+2. 在桌面端打开 **插件 → 添加插件**，选择解压后包含 `package.json` 的 `package/` 目录。安装包已包含构建产物，无需本地构建。
 
-2. 启用 **计划预览增强**。仓库已包含构建产物 `lib/`，安装时不会执行构建脚本，也不需要 npm 或本地构建。
-3. 使用 `/plan` 进入计划模式。计划可在右栏自动打开，也可从原生卡片点击 **查看完整计划**；批准或要求修改仍使用原生控件。
+### 命令行安装（可选）
+
+以下以 `v0.1.10` 为例。`--profile` 指定安装目标，不是界面类型：桌面端虽然使用 Web 界面，配置名仍是 `desktop`。桌面端命令须使用应用随附的 `dsh`，而非通过 npm 安装的 CLI。
+
+**桌面端：**
+
+```powershell
+dsh plugin --profile desktop add "github:Ling-ye-Future/dsh-better-plan#v0.1.10"
+```
+
+**独立 Web（配置名是 `web` 时）：**
+
+```powershell
+dsh plugin --profile web add "github:Ling-ye-Future/dsh-better-plan#v0.1.10"
+```
+
+安装后确认 Better Sidebar 和 **计划预览增强** 均已启用。使用 `/plan` 进入计划模式。计划可在右栏自动打开，也可从原生卡片点击 **查看完整计划**；批准或要求修改仍使用原生控件。
 
 需要修改代码时，按[本地构建](#本地构建)重建 `lib/` 后再从源码目录添加插件。
 
@@ -96,6 +110,12 @@ npm run build
 
 ## English summary
 
-DSH Better Plan adds a document view for native plans in the DSH web sidebar. The verified setup is DSH `0.2.2-rc.5` with Better Sidebar `0.32.1` enabled. Install it from source with `dsh plugin --profile web add github:Ling-ye-Future/dsh-better-plan`. The repository ships the built `lib/` output, so installing runs no build script and needs no npm.
+DSH Better Plan adds a document view for native plans in the DSH web sidebar. The verified setup is DSH `0.2.2-rc.5` with Better Sidebar `0.32.1` enabled.
+
+- **Desktop (recommended):** Download and extract the prebuilt package from [GitHub Releases](https://github.com/Ling-ye-Future/dsh-better-plan/releases). In **Plugins → Add plugin**, select the extracted `package/` directory containing `package.json`. No local build is needed.
+- **Desktop CLI:** Use the `dsh` command bundled with the Desktop application: `dsh plugin --profile desktop add "github:Ling-ye-Future/dsh-better-plan#v0.1.10"`.
+- **Standalone Web CLI:** For a profile named `web`, use `dsh plugin --profile web add "github:Ling-ye-Future/dsh-better-plan#v0.1.10"`. This does not install into Desktop.
+
+Make sure Better Sidebar and Better Plan Preview are both enabled.
 
 The preview supports Mermaid, KaTeX, syntax highlighting, and workspace-scoped file links. In an active review, select text in one paragraph or list item, add a comment, then choose **Continue planning with comments** to send feedback without approving the plan. Native review controls remain available. Disable the add-on to restore the native preview.
