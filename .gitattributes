@@ -1,3 +1,6 @@
-# esbuild 产出 LF；core.autocrlf=true 的 Windows 检出会把它转成 CRLF，
-# 导致"重建后的 lib/ 与提交的 lib/ 不一致"。固定下来：lib/ 原样存取。
+# 仓库统一用 LF。构建会把 src/plan.css 与 third-party/*.txt 内联进 lib/ 产物，
+# 若检出时被 core.autocrlf 转成 CRLF，重建结果就会和提交的 lib/ 不一致。
+* text=auto eol=lf
+
+# esbuild 产物原样存取，不做任何换行转换
 lib/** -text
