@@ -1,0 +1,3 @@
+- insert:
+    - id: better-plan
+      name: '@local/dsh-better-plan'

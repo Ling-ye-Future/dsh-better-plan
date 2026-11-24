@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36" fill="none">
+  <defs>
+    <linearGradient id="bp-sheet" x1="11" y1="8" x2="25" y2="28" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5A9BF3"/>
+      <stop offset="1" stop-color="#414BC4"/>
+    </linearGradient>
+  </defs>
+  <path d="M11.75 7.5h9l5.75 5.75V26a2.5 2.5 0 0 1-2.5 2.5H11.75a2.5 2.5 0 0 1-2.5-2.5V10a2.5 2.5 0 0 1 2.5-2.5Z" fill="url(#bp-sheet)"/>
+  <path d="M20.75 7.5v3.75c0 1.1.9 2 2 2h3.75" fill="#B9D4FF"/>
+  <path d="m12.8 17.35 1.45 1.45 2.65-3.05m1.9 2.2h3.95m-10.1 4.6h10.1" stroke="#F9FBFF" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
