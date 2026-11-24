@@ -1,7 +1,5 @@
 /node_modules/
-/lib/
 /dist/
-/test/
 /*.tgz
 
 # Local environment files and npm logs
