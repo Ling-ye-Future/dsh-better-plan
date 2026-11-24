@@ -1,0 +1,3 @@
+# esbuild 产出 LF；core.autocrlf=true 的 Windows 检出会把它转成 CRLF，
+# 导致"重建后的 lib/ 与提交的 lib/ 不一致"。固定下来：lib/ 原样存取。
+lib/** -text
