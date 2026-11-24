@@ -6,9 +6,9 @@ import path from 'node:path';
 const require = createRequire(import.meta.url);
 const json = async (filename) => JSON.parse(await readFile(filename, 'utf8'));
 const manifest = await json('package.json');
+const katexCssPath = require.resolve('katex/dist/katex.min.css');
 
 async function buildKatexCss() {
-  const katexCssPath = require.resolve('katex/dist/katex.min.css');
   const katexDir = path.dirname(katexCssPath);
   const raw = await readFile(katexCssPath, 'utf8');
   const stripped = raw
@@ -28,7 +28,7 @@ async function buildKatexCss() {
   if (/url\((?!["']?data:)/i.test(inlined)) {
     throw new Error('Unexpected external url() remaining in bundled KaTeX CSS');
   }
-  return { katexCssPath, css: inlined };
+  return inlined;
 }
 
 function createPlanCssPlugin() {
@@ -36,7 +36,7 @@ function createPlanCssPlugin() {
     name: 'better-plan-css',
     setup(pluginBuild) {
       pluginBuild.onLoad({ filter: /[\\/]src[\\/]plan\.css$/ }, async (args) => {
-        const [{ css: katexCss, katexCssPath }, planCss] = await Promise.all([
+        const [katexCss, planCss] = await Promise.all([
           buildKatexCss(),
           readFile(args.path, 'utf8'),
         ]);
@@ -138,28 +138,35 @@ for (const result of [hostResult, frameResult, mermaidChunkResult, clientResult]
   }
 }
 
+// These npm tarballs omit their full license. Keep the source and version explicit.
+const upstreamLicenses = new Map([
+  ['rehype-katex@7.0.1', 'remark-math-MIT.txt'],
+  ['remark-math@6.0.0', 'remark-math-MIT.txt'],
+]);
+const noticeText = async (filename) => (await readFile(filename, 'utf8')).trim();
+const upstreamNotice = (name) => noticeText(new URL(`../third-party/${name}`, import.meta.url));
+
 const notices = ['Third-party notices for the bundled Better Plan Preview client and host.'];
 for (const directory of [...directories].sort()) {
   const pkg = await json(path.join(directory, 'package.json'));
-  const available = await readdir(directory);
-  const licenses = available.filter(name => /^(?:licen[sc]e|notice|copying)(?:\.[\w.-]+)?$/i.test(name)).sort();
-  let bodies;
-  if (licenses.length) {
-    bodies = await Promise.all(licenses.map(async (name) => (await readFile(path.join(directory, name), 'utf8')).trim()));
-  } else {
-    if (!pkg.license) throw new Error('Missing bundled license notice: ' + pkg.name);
-    const readmeName = available.find(name => /^readme(?:\.[\w.-]+)?$/i.test(name));
-    const readme = readmeName ? await readFile(path.join(directory, readmeName), 'utf8') : '';
-    const section = /(?:^|\n)##+\s+licen[sc]e\b([\s\S]*?)(?=\n##+\s|\n<!--|$)/i.exec(readme)?.[1]?.trim();
-    const author = typeof pkg.author === 'string' ? pkg.author : pkg.author?.name;
-    const repo = typeof pkg.repository === 'string' ? pkg.repository : pkg.repository?.url;
-    bodies = [[
-      `License: ${pkg.license} (declared in package.json; standalone license file omitted in monorepo tarball)`,
-      author ? `Author: ${author}` : null,
-      repo ? `Repository: ${repo}` : null,
-      section || null,
-    ].filter(Boolean).join('\n')];
+  const identity = `${pkg.name}@${pkg.version}`;
+  const available = (await readdir(directory)).sort();
+  const readInPackage = (name) => noticeText(path.join(directory, name));
+  const licenses = available.filter(name => /^(?:licen[sc]e|copying)(?:\.[\w.-]+)?$/i.test(name));
+  const bodies = (await Promise.all(licenses.map(readInPackage))).filter(Boolean);
+  if (!bodies.length) {
+    const upstream = upstreamLicenses.get(identity);
+    const text = upstream && await upstreamNotice(upstream);
+    if (!text) throw new Error(`Missing bundled license text: ${identity}`);
+    bodies.push(text);
   }
-  notices.push(pkg.name + '@' + pkg.version + ' (' + pkg.license + ')\n\n' + bodies.join('\n\n'));
+  const supplemental = available.filter(name => /^notice(?:\.[\w.-]+)?$/i.test(name));
+  bodies.push(...(await Promise.all(supplemental.map(readInPackage))).filter(Boolean));
+  notices.push(`${identity} (${pkg.license})\n\n${bodies.join('\n\n')}`);
 }
+
+const katexFontVersion = (await json(path.join(path.dirname(katexCssPath), '..', 'package.json'))).version;
+const fontLicense = await upstreamNotice(`katex-fonts-${katexFontVersion}.txt`);
+if (!fontLicense) throw new Error('Missing bundled KaTeX font license text');
+notices.push(`KaTeX ${katexFontVersion} fonts (OFL-1.1)\n\n${fontLicense}`);
 await writeFile('lib/THIRD-PARTY-NOTICES.txt', notices.join('\n\n' + '-'.repeat(72) + '\n\n') + '\n');

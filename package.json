@@ -1,6 +1,6 @@
 {
   "name": "@local/dsh-better-plan",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "private": true,
   "description": "Antigravity-inspired plan previews for DSH with Better Sidebar, including Mermaid, math, syntax highlighting, safe workspace links, and tiered plan-mode structure guidance.",
   "type": "module",
@@ -53,10 +53,13 @@
     "build": "node scripts/build.mjs",
     "test": "npm run build && node --test"
   },
+  "overrides": {
+    "katex": "$katex"
+  },
   "devDependencies": {
     "@deepseek-ai/schemastery": "^3.19.0",
     "esbuild": "0.25.12",
-    "katex": "^0.16.47",
+    "katex": "0.18.2",
     "lowlight": "^3.3.0",
     "mermaid": "^11.16.1",
     "react": "18.2.0",

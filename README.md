@@ -11,7 +11,7 @@
 | DSH Web 界面 | `0.2.2-rc.5` |
 | Better Sidebar（需启用） | `0.32.1` |
 
-1. 从 [v0.1.9 Release](https://github.com/Ling-ye-Future/dsh-better-plan/releases/tag/v0.1.9) 下载 `dsh-better-plan-0.1.9.tgz`。仓库为私有时，需要有访问权限的 GitHub 账号；可用发布说明中的 SHA-256 校验下载文件。
+1. 在 [GitHub Releases](https://github.com/Ling-ye-Future/dsh-better-plan/releases) 中选择带有 `dsh-better-plan-*.tgz` 附件的发布，并用发布说明中的 SHA-256 校验下载文件。仓库为私有时，需要有访问权限的 GitHub 账号；如果没有安装包附件，可[从源码构建](#本地构建与打包)。
 2. 解压安装包，在 DSH 的 **插件 → 添加插件** 中选择含插件清单 `package.json` 的目录（解压后的 `package/`），启用 **计划预览增强**。安装发布包不需要 npm 或本地构建。
 3. 使用 `/plan` 进入计划模式。计划可在右栏自动打开，也可从原生卡片点击 **查看完整计划**；批准或要求修改仍使用原生控件。
 
